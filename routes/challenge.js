@@ -91,13 +91,6 @@ router.get('/challenge/info/:challengeSub', auth.optional, async (req, res, next
     let aChallenge = await Challenge.findOne({ sub: req.params.challengeSub })
       .populate('author', 'username name image role company companyImage companyWebsite companySize industryCategory industryName')
       .populate('tags', '-countChallenges -countMembers -countProposals -__v')
-      .populate({
-        path: 'comments',
-        populate: {
-          path: 'author',
-          select: 'username name image role company -_id'
-        }
-      })
     
     if (!aChallenge) { return res.sendStatus(404) }
     return res.json({ challenge: aChallenge.getChallenge(authUser) })
@@ -200,3 +193,12 @@ router.use(function (err, req, res, next) {
 })
 
 module.exports = router
+
+// Notes
+// .populate({
+//   path: 'comments',
+//   populate: {
+//     path: 'author',
+//     select: 'username name image role company'
+//   }
+// })

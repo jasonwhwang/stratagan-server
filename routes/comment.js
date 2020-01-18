@@ -29,24 +29,21 @@ router.delete('/comment', auth.required, async (req, res, next) => {
 // Post Comment
 router.post('/comment', auth.required, async (req, res, next) => {
   try {
-    let user = await User.findOne({ sub: req.user.sub }, '_id')
+    let user = await User.findOne({ sub: req.user.sub })
     if (!user) { return res.sendStatus(401) }
 
     let newComment = null
-    if (req.body.comment._id !== null) {
-      newComment = await Comment.findById(req.body.comment._id)
-      if (String(newComment.author) !== String(user._id)) {
-        return res.sendStatus(401)
-      }
-    } else {
-      newComment = new Comment()
-      newComment.author = user._id
-    }
+    newComment = new Comment()
+    newComment.author = user._id
 
     newComment.body = req.body.comment.body
-    if (req.body.comment.challengeId) newComment.challengeId = req.body.comment.challengeId
+    if (req.body.comment.challengeId) {
+      newComment.challengeId = req.body.comment.challengeId
+      let challenge = await Challenge.findById(req.body.comment.challengeId)
+      challenge.comments.unshift(newComment._id)
+      challenge.save()
+    }
     else newComment.proposalSub = req.body.comment.proposalSub
-
 
     await newComment.save()
     return res.json({ comment: newComment })
@@ -98,11 +95,14 @@ router.get('/comment/challenge/:challengeId', auth.optional, async (req, res, ne
 
     if (!challenge) { return res.sendStatus(404) }
 
+    let allComments = await Promise.all(challenge.comments.map(async function (aComment) {
+      let newObject = aComment.toObject()
+      if (authUser) newObject.userLiked = await authUser.isLiked(newObject._id)
+      return newObject;
+    }))
+
     return res.json({
-      comments: challenge.comments.map(function (aComment) {
-        if (authUser) aComment.isLiked = authUser.isLiked(aComment._id)
-        return aComment;
-      })
+      comments: allComments
     })
 
   } catch (err) {

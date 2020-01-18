@@ -26,6 +26,7 @@ ChallengeSchema.index({ title: 'text', heading: 'text' })
 
 ChallengeSchema.methods.getChallenge = function (authUser) {
   return {
+    _id: this._id,
     sub: this.sub,
     image: this.image,
     title: this.title,
@@ -39,9 +40,7 @@ ChallengeSchema.methods.getChallenge = function (authUser) {
     type: this.type,
     startDate: this.startDate ? this.startDate : null,
     endDate: this.endDate ? this.endDate : null,
-    
-    comments: [],
-    // comments: this.comments,
+
     bookmarkedCount: this.bookmarked.length,
     userBookmarked: authUser ? authUser.isBookmarked(authUser._id) : false,
     updatedAt: this.updatedAt

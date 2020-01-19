@@ -13,15 +13,16 @@ mongoose.connect(process.env.M_URI, {
 })
 
 const app = express()
-app.use(cors({
-  origin: 'http://localhost:3000'
-}))
+app.use(cors())
 app.use(morgan('dev'))
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 
-require('./models')
-app.use('/api', require('./routes'))
+// require('./models')
+// app.use('/api', require('./routes'))
+app.get('/', (req, res) => {
+  res.send("Stratagan API");
+});
 
 app.use(function(req, res, next) {
   var err = new Error('Not Found')

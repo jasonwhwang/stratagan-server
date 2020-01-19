@@ -2,7 +2,7 @@ const express = require('express')
 const mongoose = require('mongoose')
 const cors = require('cors')
 const morgan = require('morgan')
-if (process.env.NODE_ENV !== 'production') { require('dotenv').config() }
+// require('dotenv').config()
 
 mongoose.connect(process.env.M_URI, {
   useNewUrlParser: true,

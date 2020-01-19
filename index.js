@@ -2,7 +2,7 @@ const express = require('express')
 const mongoose = require('mongoose')
 const cors = require('cors')
 const morgan = require('morgan')
-require('dotenv').config()
+if (process.env.NODE_ENV !== 'production') { require('dotenv').config() }
 
 mongoose.connect(process.env.M_URI, {
   useNewUrlParser: true,
@@ -18,8 +18,8 @@ app.use(morgan('dev'))
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 
-// require('./models')
-// app.use('/api', require('./routes'))
+require('./models')
+app.use('/api', require('./routes'))
 app.get('/', (req, res) => {
   res.send("Stratagan API");
 });

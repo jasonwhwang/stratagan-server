@@ -1,7 +1,7 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const cors = require('cors')
-const morgan = require('morgan')
+// const morgan = require('morgan')
 // require('dotenv').config()
 
 mongoose.connect(process.env.M_URI, {
@@ -14,12 +14,12 @@ mongoose.connect(process.env.M_URI, {
 
 const app = express()
 app.use(cors())
-app.use(morgan('dev'))
+// app.use(morgan('dev'))
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 
-require('./models')
-app.use('/api', require('./routes'))
+// require('./models')
+// app.use('/api', require('./routes'))
 app.get('/', (req, res) => {
   res.send("Stratagan API");
 });

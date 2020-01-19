@@ -18,8 +18,8 @@ app.use(cors())
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 
-// require('./models')
-// app.use('/api', require('./routes'))
+require('./models')
+app.use('/api', require('./routes'))
 app.get('/', (req, res) => {
   res.send("Stratagan API");
 });
